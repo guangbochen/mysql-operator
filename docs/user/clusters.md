@@ -40,14 +40,14 @@ $ kubectl create secret generic mysql-root-user-secret --from-literal=password=f
 Create your cluster and reference it
 
 ```yaml
-apiVersion: mysql.oracle.com/v1alpha1
+apiVersion: mysqlagent
 kind: Cluster
 metadata:
-  name: mysql-cluster-custom-secret
+  name: mysqlagent
 spec:
   members: 1
   rootPasswordSecret:
-    name: mysql-root-user-secret
+    name: mysqlagent
 ```
 
 ### Create a cluster with a persistent volume

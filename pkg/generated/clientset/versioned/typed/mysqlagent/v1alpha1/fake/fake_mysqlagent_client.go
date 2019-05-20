@@ -12,23 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package internalinterfaces
+package fake
 
 import (
-	time "time"
-
-	versioned "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	runtime "k8s.io/apimachinery/pkg/runtime"
-	cache "k8s.io/client-go/tools/cache"
+	v1alpha1 "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned/typed/mysqlagent/v1alpha1"
+	rest "k8s.io/client-go/rest"
+	testing "k8s.io/client-go/testing"
 )
 
-type NewInformerFunc func(versioned.Interface, time.Duration) cache.SharedIndexInformer
-
-// SharedInformerFactory a small interface to allow for adding an informer without an import cycle
-type SharedInformerFactory interface {
-	Start(stopCh <-chan struct{})
-	InformerFor(obj runtime.Object, newFunc NewInformerFunc) cache.SharedIndexInformer
+type FakeMySQLV1alpha1 struct {
+	*testing.Fake
 }
 
-type TweakListOptionsFunc func(*v1.ListOptions)
+func (c *FakeMySQLV1alpha1) ClusterAgents(namespace string) v1alpha1.ClusterAgentInterface {
+	return &FakeClusterAgents{c, namespace}
+}
+
+// RESTClient returns a RESTClient that is used to communicate
+// with API server by this client implementation.
+func (c *FakeMySQLV1alpha1) RESTClient() rest.Interface {
+	var ret *rest.RESTClient
+	return ret
+}

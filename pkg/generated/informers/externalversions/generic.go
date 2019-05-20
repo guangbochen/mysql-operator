@@ -1,4 +1,4 @@
-// Copyright 2018 Oracle and/or its affiliates. All rights reserved.
+// Copyright 2019 Oracle and/or its affiliates. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package externalversions
 import (
 	"fmt"
 
-	v1alpha1 "github.com/oracle/mysql-operator/pkg/apis/mysql/v1alpha1"
+	v1alpha1 "github.com/oracle/mysql-operator/pkg/apis/mysqlagent/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )
@@ -49,14 +49,8 @@ func (f *genericInformer) Lister() cache.GenericLister {
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
 	// Group=mysql.oracle.com, Version=v1alpha1
-	case v1alpha1.SchemeGroupVersion.WithResource("backups"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.MySQL().V1alpha1().Backups().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("backupschedules"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.MySQL().V1alpha1().BackupSchedules().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("clusters"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.MySQL().V1alpha1().Clusters().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("restores"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.MySQL().V1alpha1().Restores().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("clusteragents"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.MySQL().V1alpha1().ClusterAgents().Informer()}, nil
 
 	}
 

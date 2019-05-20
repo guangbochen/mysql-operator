@@ -29,20 +29,18 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 
 	kubeinformers "k8s.io/client-go/informers"
-	kubernetes "k8s.io/client-go/kubernetes"
-	scheme "k8s.io/client-go/kubernetes/scheme"
-	rest "k8s.io/client-go/rest"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/rest"
 
-	cluster "github.com/oracle/mysql-operator/pkg/cluster"
-	backupcontroller "github.com/oracle/mysql-operator/pkg/controllers/backup"
+	"github.com/oracle/mysql-operator/pkg/cluster"
 	clustermgr "github.com/oracle/mysql-operator/pkg/controllers/cluster/manager"
-	restorecontroller "github.com/oracle/mysql-operator/pkg/controllers/restore"
 	clientset "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned"
 	opscheme "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned/scheme"
 	informers "github.com/oracle/mysql-operator/pkg/generated/informers/externalversions"
 	agentopts "github.com/oracle/mysql-operator/pkg/options/agent"
-	metrics "github.com/oracle/mysql-operator/pkg/util/metrics"
-	signals "github.com/oracle/mysql-operator/pkg/util/signals"
+	"github.com/oracle/mysql-operator/pkg/util/metrics"
+	"github.com/oracle/mysql-operator/pkg/util/signals"
 )
 
 const (
@@ -62,7 +60,7 @@ func resyncPeriod(opts *agentopts.MySQLAgentOpts) func() time.Duration {
 	}
 }
 
-// Run runs the MySQL backup controller. It should never exit.
+// Run runs the MySQL controller. It should never exit.
 func Run(opts *agentopts.MySQLAgentOpts) error {
 	kubeconfig, err := rest.InClusterConfig()
 	if err != nil {
@@ -105,8 +103,6 @@ func Run(opts *agentopts.MySQLAgentOpts) error {
 	metrics.RegisterPodName(opts.Hostname)
 	metrics.RegisterClusterName(manager.Instance.ClusterName)
 	clustermgr.RegisterMetrics()
-	backupcontroller.RegisterMetrics()
-	restorecontroller.RegisterMetrics()
 	http.Handle("/metrics", prometheus.Handler())
 	go http.ListenAndServe(metricsEndpoint, nil)
 
@@ -118,35 +114,6 @@ func Run(opts *agentopts.MySQLAgentOpts) error {
 	go func() {
 		defer wg.Done()
 		manager.Run(ctx)
-	}()
-
-	backupController := backupcontroller.NewAgentController(
-		kubeclient,
-		mysqlopClient.MySQLV1alpha1(),
-		sharedInformerFactory.MySQL().V1alpha1().Backups(),
-		sharedInformerFactory.MySQL().V1alpha1().Clusters(),
-		kubeInformerFactory.Core().V1().Pods(),
-		opts.Hostname,
-	)
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		backupController.Run(ctx, 5)
-	}()
-
-	restoreController := restorecontroller.NewAgentController(
-		kubeclient,
-		mysqlopClient.MySQLV1alpha1(),
-		sharedInformerFactory.MySQL().V1alpha1().Restores(),
-		sharedInformerFactory.MySQL().V1alpha1().Clusters(),
-		sharedInformerFactory.MySQL().V1alpha1().Backups(),
-		kubeInformerFactory.Core().V1().Pods(),
-		opts.Hostname,
-	)
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		restoreController.Run(ctx, 5)
 	}()
 
 	// Shared informers have to be started after ALL controllers.

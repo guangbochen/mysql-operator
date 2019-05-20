@@ -15,15 +15,11 @@
 package cluster
 
 import (
-	"fmt"
-
 	"k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	corelistersv1 "k8s.io/client-go/listers/core/v1"
 
-	"github.com/oracle/mysql-operator/pkg/constants"
 	"github.com/oracle/mysql-operator/pkg/controllers/util"
-	"github.com/oracle/mysql-operator/pkg/resources/statefulsets"
 )
 
 // PodControlInterface defines the interface that the
@@ -49,18 +45,3 @@ func (rpc *realPodControl) PatchPod(old *v1.Pod, new *v1.Pod) error {
 	return err
 }
 
-// updatePodToOperatorVersion sets the specified MySQLOperator version on:
-//   1. The Pod operator version label.
-//   2. The MySQLAgent container image version
-func updatePodToOperatorVersion(pod *v1.Pod, mysqlAgentImage, version string) *v1.Pod {
-	targetContainer := statefulsets.MySQLAgentName
-	newAgentImage := fmt.Sprintf("%s:%s", mysqlAgentImage, version)
-	pod.Labels[constants.MySQLOperatorVersionLabel] = version
-	for idx, container := range pod.Spec.Containers {
-		if container.Name == targetContainer {
-			pod.Spec.Containers[idx].Image = newAgentImage
-			break
-		}
-	}
-	return pod
-}

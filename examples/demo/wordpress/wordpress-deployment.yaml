@@ -31,11 +31,11 @@ spec:
         image: wordpress:4.8.0-apache
         env:
         - name: WORDPRESS_DB_HOST
-          value: mysql-wordpress-0.mysql-wordpress
+          value: mysqlagent-wordpress-0.mysqlagent-wordpress
         - name: WORDPRESS_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: wordpress-mysql-root-password
+              name: wordpress-mysqlagent-root-password
               key: password
         ports:
         - containerPort: 80

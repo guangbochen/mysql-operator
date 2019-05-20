@@ -7,6 +7,6 @@ REPO_ROOT="${HACK_DIR}/.."
   all \
   github.com/oracle/mysql-operator/pkg/generated \
   github.com/oracle/mysql-operator/pkg/apis \
-  mysql:v1alpha1 \
+  mysqlagent:v1alpha1 \
   --go-header-file hack/boilerplate/boilerplate.go.txt \
   "$@"

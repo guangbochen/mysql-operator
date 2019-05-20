@@ -28,7 +28,7 @@ var (
 	statusMutex sync.Mutex
 )
 
-// SetStatus sets the status of the local mysql cluster. The cluster manager
+// SetStatus sets the status of the local mysqlagent cluster. The cluster manager
 // controller is responsible for updating.
 func SetStatus(new *innodb.ClusterStatus) {
 	statusMutex.Lock()
@@ -51,7 +51,7 @@ func GetStatus() *innodb.ClusterStatus {
 func NewHealthCheck() (healthcheck.Check, error) {
 	instance, err := NewLocalInstance()
 	if err != nil {
-		return nil, errors.Wrap(err, "getting local mysql instance")
+		return nil, errors.Wrap(err, "getting local mysqlagent instance")
 	}
 
 	return func() error {

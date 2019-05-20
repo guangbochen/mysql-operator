@@ -1,4 +1,4 @@
-// Copyright 2018 Oracle and/or its affiliates. All rights reserved.
+// Copyright 2019 Oracle and/or its affiliates. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@ package fake
 
 import (
 	clientset "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned"
-	mysqlv1alpha1 "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned/typed/mysql/v1alpha1"
-	fakemysqlv1alpha1 "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned/typed/mysql/v1alpha1/fake"
+	mysqlv1alpha1 "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned/typed/mysqlagent/v1alpha1"
+	fakemysqlv1alpha1 "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned/typed/mysqlagent/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"

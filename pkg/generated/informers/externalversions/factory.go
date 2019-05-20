@@ -1,4 +1,4 @@
-// Copyright 2018 Oracle and/or its affiliates. All rights reserved.
+// Copyright 2019 Oracle and/or its affiliates. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import (
 
 	versioned "github.com/oracle/mysql-operator/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/oracle/mysql-operator/pkg/generated/informers/externalversions/internalinterfaces"
-	mysql "github.com/oracle/mysql-operator/pkg/generated/informers/externalversions/mysql"
+	mysqlagent "github.com/oracle/mysql-operator/pkg/generated/informers/externalversions/mysqlagent"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -119,9 +119,9 @@ type SharedInformerFactory interface {
 	ForResource(resource schema.GroupVersionResource) (GenericInformer, error)
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
-	MySQL() mysql.Interface
+	MySQL() mysqlagent.Interface
 }
 
-func (f *sharedInformerFactory) MySQL() mysql.Interface {
-	return mysql.New(f, f.namespace, f.tweakListOptions)
+func (f *sharedInformerFactory) MySQL() mysqlagent.Interface {
+	return mysqlagent.New(f, f.namespace, f.tweakListOptions)
 }

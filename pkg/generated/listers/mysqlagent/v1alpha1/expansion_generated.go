@@ -12,5 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This package has the automatically generated clientset.
-package versioned
+package v1alpha1
+
+// ClusterAgentListerExpansion allows custom methods to be added to
+// ClusterAgentLister.
+type ClusterAgentListerExpansion interface{}
+
+// ClusterAgentNamespaceListerExpansion allows custom methods to be added to
+// ClusterAgentNamespaceLister.
+type ClusterAgentNamespaceListerExpansion interface{}

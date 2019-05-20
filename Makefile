@@ -75,12 +75,6 @@ build-docker:
 	@docker build \
 	--build-arg=http_proxy \
 	--build-arg=https_proxy \
-	-t $(REGISTRY)/$(TENANT)/mysql-operator:$(VERSION) \
-	-f docker/mysql-operator/Dockerfile .
-
-	@docker build \
-	--build-arg=http_proxy \
-	--build-arg=https_proxy \
 	-t $(REGISTRY)/$(TENANT)/mysql-agent:$(VERSION) \
 	-f docker/mysql-agent/Dockerfile .
 
@@ -88,7 +82,6 @@ build-docker:
 .PHONY: push
 push: build build-docker
 	@docker login iad.ocir.io -u $(DOCKER_REGISTRY_USERNAME) -p '$(DOCKER_REGISTRY_PASSWORD)'
-	@docker push $(REGISTRY)/$(TENANT)/mysql-operator:$(VERSION)
 	@docker push $(REGISTRY)/$(TENANT)/mysql-agent:$(VERSION)
 
 .PHONY: version
@@ -102,16 +95,6 @@ lint:
 .PHONY: clean
 clean:
 	rm -rf .go bin
-
-.PHONY: run-dev
-run-dev:
-	@go run \
-	    -ldflags "-X ${PKG}/pkg/version.buildVersion=${MYSQL_AGENT_VERSION}" \
-	    cmd/mysql-operator/main.go \
-	    --mysql-agent-image=iad.ocir.io/$(TENANT)/mysql-agent \
-	    --kubeconfig=${KUBECONFIG} \
-	    --v=4 \
-	    --namespace=${USER}
 
 .PHONY: generate
 generate:
