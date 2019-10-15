@@ -119,7 +119,7 @@ func (i *Instance) GetShellURI() string {
 
 // Name returns the name of the instance.
 func (i *Instance) Name() string {
-	return fmt.Sprintf("%s.%s", i.PodName(), i.ParentName)
+	return fmt.Sprintf("%s.%s.%s", i.PodName(), i.ParentName, i.Namespace)
 }
 
 // PodName returns the name of the instance's Pod.
@@ -134,6 +134,7 @@ func (i *Instance) WhitelistCIDR() (string, error) {
 	for _, addrRange := range []string{
 		"10.0.0.0/8",
 		"172.16.0.0/12",
+		"172.1.0.0/14",
 		"192.168.0.0/16",
 		"100.64.0.0/10", // IPv4 shared address space (RFC 6598), improperly used by kops
 	} {

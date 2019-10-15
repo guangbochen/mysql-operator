@@ -65,6 +65,10 @@ func NewMySQLAgentOpts() *MySQLAgentOpts {
 	}
 	namespace := os.Getenv("POD_NAMESPACE")
 	clusterName := os.Getenv("MYSQL_CLUSTER_NAME")
+	svcName := os.Getenv("SERVICE_NAME")
+	if len(svcName) != 0 {
+		hostname = fmt.Sprintf("%s.%s.%s", hostname, svcName, namespace)
+	}
 	return &MySQLAgentOpts{
 		HealthcheckPort: DefaultMySQLAgentHeathcheckPort,
 		Address:         "0.0.0.0",
@@ -96,7 +100,7 @@ func (s *MySQLAgentOpts) Validate() error {
 	if len(s.ClusterName) == 0 {
 		return fmt.Errorf("must set --cluster-name or $MYSQL_CLUSTER_NAME")
 	}
-	if len(s.ClusterName) == 0 {
+	if len(s.Hostname) == 0 {
 		return fmt.Errorf("failed to detect hostname. Set --hostname")
 	}
 	return nil
